@@ -23,13 +23,29 @@ The simplest matte page looks like this
         [2007, 'Cars', 1030, 540]
     ]
     storyboard = Storyboard(url="Sales-by-Year", title='sales by year')
+    control = SelectControl(["Bike", "Cars"])
     visualiztaion = Visualization(data=data)
+    visualizations.set_controls({"Department": control})
     storyboard.add_visualization(visualiztaion)
     viz.add(storyboard)
 
 Now run `python manage.py runserver` and access your interactive page at
 `localhost:8000/Sales-by-Year`
 
+
+Data sources
+--------------
+
+The data passed to a `Visualization` objects can be one of
+
+1. A nested lists
+2. A pandas dataframe
+3. An sqlaclhemy queryset
+
+Renderers
+------------
+
+Matte can use any of the reenderers defined in `Django-Graphos`. Google charts is the default reenderer.
 
 
 Inspirations
