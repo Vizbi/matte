@@ -1,0 +1,18 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <script type="text/javascript" src="{% static 'script.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'jquery-3.1.0.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'highcharts.js' %}"></script>
+    <script type="text/javascript" src="{% static 'highcharts-more.js' %}"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+  <body>
+    <div id="wrapper">
+    <h3>Data</h3>
+        {{ chart.as_html }}
+    </div>
+  <div intercom></div>
+  </body>
+</html>
