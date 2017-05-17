@@ -11,7 +11,13 @@
   <body>
     <div id="wrapper">
     <h3>Data</h3>
-        {{ chart.as_html }}
+        {% for chart in board %}
+            <ul>
+                <li>
+                    {{ chart.as_html }}
+                </li>
+            </ul>
+        {% endfor %}
     </div>
   <div intercom></div>
   </body>

@@ -55,20 +55,9 @@ class Visualization(models.Model):
 
 
 class Storyboard(models.Model):
-    """
-    Example:
-    [[{u'chart_id': 4, u'span': u'col-md-12'}],
-     [{u'chart_id': 5, u'span': u'col-md-12'}],
-     [{u'chart_id': 6, u'span': u'col-md-12'}]]
-    """
     PRIVATE = 'pri'
     ORGANIZATION = 'org'
     PUBLIC = 'pub'
-    VISIBILITY_CHOICES = (
-        (PRIVATE, 'Private'),
-        (ORGANIZATION, 'Organization'),
-        (PUBLIC, 'Public'),
-    )
     BASIC = 'Basic'
     COMPACT = 'Compact'
     FIRE = 'fire_skin'
@@ -87,8 +76,6 @@ class Storyboard(models.Model):
     url = models.CharField(max_length=100)
     title = models.CharField(max_length=100)
     saved_charts = models.ManyToManyField(Visualization)
-    visibility = models.CharField(max_length=3, choices=VISIBILITY_CHOICES,
-                                  default=PRIVATE)
     template_type = models.CharField(max_length=15, choices=TEMPLATE_CHOICES,
                                      default=BASIC)
     extra_emails = models.CharField(max_length=300, blank=True, null=True)
