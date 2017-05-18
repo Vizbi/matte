@@ -47,6 +47,11 @@ class Visualization(models.Model):
     options = JSONField(null=True, blank=True)
     controls = models.OneToOneField(SelectControl, null=True, blank=True)
 
+    def save(self, *args, **kwargs):
+        if not self.pk:
+            Visualization.objects.filter(name=self.name).delete()
+        return super(Visualization, self).save(*args, **kwargs)
+
     def __unicode__(self):
         return self.name
 
@@ -79,6 +84,11 @@ class Storyboard(models.Model):
     template_type = models.CharField(max_length=15, choices=TEMPLATE_CHOICES,
                                      default=BASIC)
     extra_emails = models.CharField(max_length=300, blank=True, null=True)
+
+    def save(self, *args, **kwargs):
+        if not self.pk:
+            Storyboard.objects.filter(url=self.url).delete()
+        return super(Storyboard, self).save(*args, **kwargs)
 
     def get_absolute_url(self):
         return "/db/storyboard/%s/" % self.uuid

@@ -1,3 +1,6 @@
 from django.contrib import admin
 
-# Register your models here.
+from .models import Storyboard, Visualization
+
+admin.site.register(Storyboard)
+admin.site.register(Visualization)
