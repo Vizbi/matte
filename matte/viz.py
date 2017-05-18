@@ -1,5 +1,10 @@
 from matte.models import Storyboard, Visualization
 
+from django.shortcuts import render_to_response
+
+from .models import Storyboard
+from .services import Board
+
 
 data = [['Year', 'Department', 'Sales', 'Expenses'],
         [2004, 'Bikes', 1000, 400],
@@ -21,3 +26,10 @@ storyboard.save()
 storyboard1 = Storyboard.objects.create(url='this-is-a-test-url', title='Test title')
 storyboard1.saved_charts.set([viz])
 storyboard1.save()
+
+
+def test_route_url(request, url):
+    storyboard = Storyboard.objects.get(url=url)
+    board = Board(storyboard)
+    board = {'board': board.get_chart()}
+    return render_to_response('matte/test.html', board)
