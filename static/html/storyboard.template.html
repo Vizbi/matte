@@ -1,0 +1,16 @@
+<h1>Storyboard</h1>
+<div class="row">
+	<div id="storyboardMain" class="col-md-12 storyboards">
+
+	<div class="clear"></div>
+		<div id="gridster" gridster="$ctrl.gridsterOptions" class="gridster-part">
+		  <ul>
+		      <li gridster-item="item" ng-repeat="item in $ctrl.chartData track by $index">
+                <div class="chart-section" oc-lazy-load="['static/js/core/chart-draw.service.js']">
+                  <render-visualization chart-data="item" uuid="$index"></render-visualization>
+                </div>
+              </li>
+		  </ul>
+		</div>
+	</div>
+</div>
