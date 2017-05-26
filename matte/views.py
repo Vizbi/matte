@@ -158,5 +158,5 @@ def get_formatted_data(data_source):
             engine = create_engine('postgresql://bodhi:allright@localhost:5432/bodhi_db')
             result = engine.execute(data_source)
             data_list = result.fetchall()
-            data_list.insert(result.keys())
+            data_list.insert(0, result.keys())
         return data_list
