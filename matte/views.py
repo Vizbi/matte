@@ -1,30 +1,35 @@
-from django.shortcuts import render
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from .models import Storyboard
 import json
 
-from graphos.sources.simple import SimpleDataSource
-from graphos.renderers.highcharts import LineChart as HighchartsLineChart
-from graphos.renderers.highcharts import BarChart as HighchartsBarChart
-from graphos.renderers.highcharts import ColumnChart as HighchartsColumnChart
-from graphos.renderers.highcharts import PieChart as HighchartsPieChart
-from graphos.renderers.highcharts import DonutChart as HighchartsDonutChart
-from graphos.renderers.highcharts import AreaChart as HighchartsAreaChart
-from graphos.renderers.highcharts import ScatterChart as HighchartsScatterChart
-from graphos.renderers.highcharts import MultiAxisChart as HighChartMultiAxisChart
-from graphos.renderers.highcharts import ColumnLineChart as HighChartColumnLineChart
-from graphos.renderers.highcharts import LineColumnChart as HighChartLineColumnChart
-from graphos.renderers.highcharts import HighMap
-from graphos.renderers.highcharts import HeatMap
-from graphos.renderers.highcharts import Funnel
-from graphos.renderers.highcharts import TreeMap
-from graphos.renderers.highcharts import PieDonut
-from graphos.renderers.highcharts import Bubble
-from graphos.renderers.c3js import LineChart as C3LineChart
+from django.shortcuts import render
 from graphos.renderers.c3js import BarChart as C3BarChart
 from graphos.renderers.c3js import ColumnChart as C3ColumnChart
+from graphos.renderers.c3js import LineChart as C3LineChart
 from graphos.renderers.c3js import PieChart as C3PieChart
+from graphos.renderers.highcharts import AreaChart as HighchartsAreaChart
+from graphos.renderers.highcharts import BarChart as HighchartsBarChart
+from graphos.renderers.highcharts import Bubble
+from graphos.renderers.highcharts import ColumnChart as HighchartsColumnChart
+from graphos.renderers.highcharts import \
+    ColumnLineChart as HighChartColumnLineChart
+from graphos.renderers.highcharts import DonutChart as HighchartsDonutChart
+from graphos.renderers.highcharts import Funnel
+from graphos.renderers.highcharts import HeatMap
+from graphos.renderers.highcharts import HighMap
+from graphos.renderers.highcharts import LineChart as HighchartsLineChart
+from graphos.renderers.highcharts import \
+    LineColumnChart as HighChartLineColumnChart
+from graphos.renderers.highcharts import \
+    MultiAxisChart as HighChartMultiAxisChart
+from graphos.renderers.highcharts import PieChart as HighchartsPieChart
+from graphos.renderers.highcharts import PieDonut
+from graphos.renderers.highcharts import ScatterChart as HighchartsScatterChart
+from graphos.renderers.highcharts import TreeMap
+from graphos.sources.simple import SimpleDataSource
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from sqlalchemy import create_engine
+
+from .models import Storyboard
 import matte.viz
 
 chart_klasses = {}
@@ -130,6 +135,7 @@ def get_chart_specific_data(data, chart_type, chart_kind, options={}):
     This assumes that only supported chart_type and chart_kind will be passed.
     """
     if chart_type != 'table':
+        data = get_formatted_data(data)
         simple_data_source = SimpleDataSource(data)
         chart_klass = get_chart_klass(chart_kind, chart_type)
         if chart_kind == 'highcharts':
@@ -137,6 +143,20 @@ def get_chart_specific_data(data, chart_type, chart_kind, options={}):
         elif chart_kind == 'c3js':
             d = get_c3_data(chart_klass, simple_data_source, options)
     else:
-        d = {'chart_unspecific_data': data}
+        d = {'chart_unspecific_data': data_list}
     d['title'] = options.get('title')
     return d
+
+def get_formatted_data(data_source):
+    if isinstance(data_source, list):
+        return data_source
+    else:
+        try:
+            data_list = data_source.values.tolist()
+            data_list.insert(0, data_source.columns)
+        except:
+            engine = create_engine('postgresql://bodhi:allright@localhost:5432/bodhi_db')
+            result = engine.execute(data_source)
+            data_list = result.fetchall()
+            data_list.insert(result.keys())
+        return data_list
