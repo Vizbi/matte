@@ -1,5 +1,10 @@
 from matte.models import Storyboard, Visualization
 
+from django.shortcuts import render_to_response
+
+from .models import Storyboard
+from .services import Board
+
 
 data = [['Year', 'Department', 'Sales', 'Expenses'],
         [2004, 'Bikes', 1000, 400],
