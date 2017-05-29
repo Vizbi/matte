@@ -69,7 +69,21 @@ class UrlRoute(APIView):
         storyboard = [x for x in Storyboard._all if x.url == url][0]
         data = []
         for each in storyboard.get_visualizations():
-            data.append(get_chart_specific_data(each.data, each.chart_type, each.chart_kind))
+            chart_data = get_chart_specific_data(each.data, each.chart_type, each.chart_kind)
+            try:
+                slider = {
+                    'min': int(min(chart_data['x_axis']['categories'])),
+                    'max': int(max(chart_data['x_axis']['categories'])),
+                    'options': {
+                        'floor': int(min(chart_data['x_axis']['categories'])),
+                        'ceil': int(max(chart_data['x_axis']['categories'])),
+                    }
+                }
+            except:
+                slider = {}
+
+            chart_data['slider'] = slider
+            data.append(chart_data)
         return Response(data)
 
 
@@ -96,7 +110,12 @@ def get_highcharts_data(chart_klass, data_source, options={}):
     if chart_klass == HighMap:
         del highcharts_data['x_axis']
         del highcharts_data['y_axis']
-        highcharts_data.update({'map_area': chart.get_map(), 'color_axis': chart.get_color_axis(), 'series_type': chart.series_type, 'map_type': chart.get_chart_type()})
+        highcharts_data.update({
+                                   'map_area': chart.get_map(),
+                                   'color_axis': chart.get_color_axis(),
+                                   'series_type': chart.series_type,
+                                   'map_type': chart.get_chart_type()
+                               })
     if chart_klass == HeatMap:
         highcharts_data.update({'color_axis': chart.get_color_axis()})
     return highcharts_data

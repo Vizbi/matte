@@ -13,8 +13,14 @@
                 }, function(response) {
                     debugger;
                 });
-
-
+                this.slider = {
+                    min: 100,
+                    max: 180,
+                    options: {
+                        floor: 0,
+                        ceil: 450
+                    }
+                }
             }]
         });
 }());
