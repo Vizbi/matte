@@ -28,6 +28,7 @@ from graphos.sources.simple import SimpleDataSource
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from sqlalchemy import create_engine
+from pandas import DataFrame
 
 from .models import Storyboard
 import matte.viz
@@ -77,6 +78,7 @@ class UrlRoute(APIView):
                     'options': {
                         'floor': int(min(chart_data['x_axis']['categories'])),
                         'ceil': int(max(chart_data['x_axis']['categories'])),
+                        'interval': 1500
                     }
                 }
             except:
@@ -85,6 +87,24 @@ class UrlRoute(APIView):
             chart_data['slider'] = slider
             data.append(chart_data)
         return Response(data)
+
+
+class GetUpdatedChart(APIView):
+
+    def get(self, request, *args, **kwargs):
+        data = request.query_params
+        storyboard = [x for x in Storyboard._all if x.url == data['slug']][0]
+        id = int(data['viz_id'])
+        viz = storyboard.get_visualizations()[id]
+        df = DataFrame(get_formatted_data(viz.data))
+        df.columns = df.iloc[0]
+        df.drop([0, ], inplace=True)
+        df.set_index(df['Year'], inplace=True)
+        new_df = df[df.index.isin(range(int(data['lowValue']), int(data['highValue']) + 1))]
+        chart_data = new_df.values.tolist()
+        chart_data.insert(0, new_df.columns.tolist())
+        chart_data = get_chart_specific_data(chart_data, viz.chart_type, viz.chart_kind)
+        return Response({'chartData': chart_data, 'id': data['viz_id']})
 
 
 def get_highcharts_data(chart_klass, data_source, options={}):

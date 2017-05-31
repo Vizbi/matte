@@ -15,9 +15,11 @@
                     </div>
                     <div ng-if="item.slider.options">
                     <rzslider
+                        id="{{ $index }}"
                         rz-slider-model="item.slider.min"
                         rz-slider-high="item.slider.max"
                         rz-slider-options="item.slider.options"></rzslider>
+                        <input readonly ng-model="item.slider.range" ng-change="$ctrl.updateChart($index)">
                     </div>
                 </li>
             </ul>
