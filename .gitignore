@@ -1,3 +1,8 @@
+<<<<<<< HEAD
+*.pyc
+dev.py
+=======
 # Created by .ignore support plugin (hsz.mobi)
 *.pyc
 dev.py
+>>>>>>> c8baad8f8f2411eb0a0767e6a9a37c164dbee84b

@@ -26,7 +26,7 @@ SCHEDULE_TIME_CHOICES = {
 }
 
 
-class SelectControl(models.Model):
+class SelectControl(object):
 
     controls = JSONField()
 
@@ -35,67 +35,29 @@ class SelectControl(models.Model):
         return self.controls
 
 
-class Visualization(models.Model):
-    data = JSONField(null=True, blank=True)
-    raw_query = models.TextField(null=True, blank=True)
-    uuid = models.CharField(max_length=20, unique=True,
-                            default=crypto.get_random_string)
-    # chart_type should be set to 'html' if raw_html is set
-    chart_type = models.CharField(max_length=50)
-    name = models.CharField(max_length=100)
-    description = models.TextField()
-    options = JSONField(null=True, blank=True)
-    controls = models.OneToOneField(SelectControl, null=True, blank=True)
+class Visualization(object):
+    _all = set()
+    def __init__(self, data, name, chart_type='line', chart_kind='highcharts'):
+        self.data = data
+        self.name = name
+        self.chart_type = chart_type
+        self.chart_kind = chart_kind
+        self.__class__._all.add(self)
 
-    def save(self, *args, **kwargs):
-        if not self.pk:
-            Visualization.objects.filter(name=self.name).delete()
-        return super(Visualization, self).save(*args, **kwargs)
+    def input_slider(self, low, high, enabled=True):
+        self.slider_low_value = low
+        self.slider_high_value = high
+        self.slider_enabled = enabled
 
-    def __unicode__(self):
-        return self.name
+class Storyboard(object):
+    _all = set()
+    def __init__(self, url, title):
+        self.url = url
+        self.title = title
+        self.__class__._all.add(self)
 
-    def set_controls(self, controls):
-        self.controls = controls
+    def set_visualizations(self, visualizations):
+        self.visualizations = visualizations
 
-
-class Storyboard(models.Model):
-    PRIVATE = 'pri'
-    ORGANIZATION = 'org'
-    PUBLIC = 'pub'
-    BASIC = 'Basic'
-    COMPACT = 'Compact'
-    FIRE = 'fire_skin'
-    EARTH = 'earth_skin'
-    FOREST = 'forest_skin'
-    TEMPLATE_CHOICES = (
-        (BASIC, 'Basic'),
-        (COMPACT, 'Compact'),
-        (FIRE, 'fire_skin'),
-        (EARTH, 'earth_skin'),
-        (FOREST, 'forest_skin'),
-    )
-
-    uuid = models.CharField(max_length=20, unique=True,
-                            default=crypto.get_random_string)
-    url = models.CharField(max_length=100)
-    title = models.CharField(max_length=100)
-    saved_charts = models.ManyToManyField(Visualization)
-    template_type = models.CharField(max_length=15, choices=TEMPLATE_CHOICES,
-                                     default=BASIC)
-    extra_emails = models.CharField(max_length=300, blank=True, null=True)
-
-    def save(self, *args, **kwargs):
-        if not self.pk:
-            Storyboard.objects.filter(url=self.url).delete()
-        return super(Storyboard, self).save(*args, **kwargs)
-
-    def get_absolute_url(self):
-        return "/db/storyboard/%s/" % self.uuid
-
-
-    def get_frontend_absolute_url(self):
-        return "/storyboards/%s/" % self.uuid
-
-    def __unicode__(self):
-        return self.title
+    def get_visualizations(self):
+        return self.visualizations

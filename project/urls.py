@@ -15,8 +15,10 @@ Including another URLconf
 """
 from django.conf.urls import url, include
 from django.contrib import admin
+from matte.views import index
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^', include('matte.urls')),
+    url(r'^$', index),
+    url(r'^matte/', include('matte.urls')),
 ]

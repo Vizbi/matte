@@ -1,0 +1,28 @@
+<h1>Storyboard</h1>
+<div class="row">
+    <div id="storyboardMain" class="col-md-12 storyboards">
+
+        <div class="clear"></div>
+        <div id="gridster" gridster="$ctrl.gridsterOptions"
+             class="gridster-part">
+            <ul>
+                <li gridster-item="item"
+                    ng-repeat="item in $ctrl.chartData track by $index">
+                    <div class="chart-section"
+                         oc-lazy-load="['static/js/core/chart-draw.service.js']">
+                        <render-visualization chart-data="item"
+                                              uuid="$index"></render-visualization>
+                    </div>
+                    <div ng-if="item.slider.options">
+                    <rzslider
+                        id="{{ $index }}"
+                        rz-slider-model="item.slider.min"
+                        rz-slider-high="item.slider.max"
+                        rz-slider-options="item.slider.options"></rzslider>
+                        <input readonly ng-model="item.slider.range" ng-change="$ctrl.updateChart($index)">
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
