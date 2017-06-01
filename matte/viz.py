@@ -23,8 +23,8 @@ data1 = [['Year', 'Department', 'Sales', 'Expenses'],
 
 df = DataFrame(data[1:], columns=data[0])
 query = 'Select "City", "Floors" from buildings'
-
 viz = Visualization(data=data, name='viz 1', chart_type='bar')
+viz.input_slider(2004, 2006)
 viz1 = Visualization(data=data1, name='viz 2', chart_type='column')
 viz2 = Visualization(data=data1, name='viz 3')
 viz3 = Visualization(data=df, name='viz 3', chart_type='column')

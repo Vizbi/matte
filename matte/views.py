@@ -71,17 +71,20 @@ class UrlRoute(APIView):
         data = []
         for each in storyboard.get_visualizations():
             chart_data = get_chart_specific_data(each.data, each.chart_type, each.chart_kind)
-            try:
-                slider = {
-                    'min': int(min(chart_data['x_axis']['categories'])),
-                    'max': int(max(chart_data['x_axis']['categories'])),
-                    'options': {
-                        'floor': int(min(chart_data['x_axis']['categories'])),
-                        'ceil': int(max(chart_data['x_axis']['categories'])),
-                        'interval': 1500
+            if hasattr(each, 'slider_enabled'):
+                try:
+                    slider = {
+                        'min': each.slider_low_value,
+                        'max': each.slider_high_value,
+                        'options': {
+                            'floor': int(min(chart_data['x_axis']['categories'])),
+                            'ceil': int(max(chart_data['x_axis']['categories'])),
+                            'interval': 1500
+                        }
                     }
-                }
-            except:
+                except:
+                    slider = {}
+            else:
                 slider = {}
 
             chart_data['slider'] = slider

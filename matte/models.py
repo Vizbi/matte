@@ -44,6 +44,11 @@ class Visualization(object):
         self.chart_kind = chart_kind
         self.__class__._all.add(self)
 
+    def input_slider(self, low, high, enabled=True):
+        self.slider_low_value = low
+        self.slider_high_value = high
+        self.slider_enabled = enabled
+
 class Storyboard(object):
     _all = set()
     def __init__(self, url, title):
