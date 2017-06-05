@@ -1,4 +1,5 @@
 import json
+import os
 
 from graphos.renderers.c3js import BarChart as C3BarChart
 from graphos.renderers.c3js import ColumnChart as C3ColumnChart
@@ -141,8 +142,8 @@ def get_formatted_data(data_source):
             data_list = data_source.values.tolist()
             data_list.insert(0, data_source.columns)
         except:
-            engine = create_engine('postgresql://bodhi:allright@localhost:5432/bodhi_db')
+            engine = create_engine(os.environ.get('DB_URL'))
             result = engine.execute(data_source)
-            data_list = result.fetchall()
+            data_list = [list(x) for x in result.fetchall()]
             data_list.insert(0, result.keys())
         return data_list

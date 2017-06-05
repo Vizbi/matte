@@ -1,9 +1,8 @@
-from django.conf import settings
 from django.contrib.postgres.fields import JSONField
 from django.db import models
 from django.utils import crypto
 
-User = settings.AUTH_USER_MODEL
+from .services import get_formatted_data
 
 NONE = 'None'
 NOW = 'Now'
@@ -28,9 +27,9 @@ SCHEDULE_TIME_CHOICES = {
 
 class SelectControl(object):
 
-    controls = JSONField()
+    def __init__(self, controls):
+        self.controls = controls
 
-    @property
     def get_controls(self):
         return self.controls
 
@@ -38,16 +37,14 @@ class SelectControl(object):
 class Visualization(object):
     _all = set()
     def __init__(self, data, name, chart_type='line', chart_kind='highcharts'):
-        self.data = data
+        self.data = get_formatted_data(data)
         self.name = name
         self.chart_type = chart_type
         self.chart_kind = chart_kind
         self.__class__._all.add(self)
 
-    def input_slider(self, low, high, enabled=True):
-        self.slider_low_value = low
-        self.slider_high_value = high
-        self.slider_enabled = enabled
+    def set_controls(self, controls):
+        self.controls = controls.controls
 
 class Storyboard(object):
     _all = set()
