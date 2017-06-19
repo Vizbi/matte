@@ -1,5 +1,5 @@
 from pandas import DataFrame
-from matte.models import Storyboard, Visualization
+from matte.models import Storyboard, Visualization, SelectControl
 
 data = [['Year', 'Department', 'Sales', 'Expenses'],
         [2004, 'Bikes', 1000, 400],
@@ -24,11 +24,16 @@ data1 = [['Year', 'Department', 'Sales', 'Expenses'],
 df = DataFrame(data[1:], columns=data[0])
 query = 'Select "City", "Floors" from buildings'
 viz = Visualization(data=data, name='viz 1', chart_type='bar')
-viz.input_slider(2004, 2006)
+sc = SelectControl({'input_slider': {'low_value': 2005, 'high_value': 2006}})
+viz.set_controls(sc)
 viz1 = Visualization(data=data1, name='viz 2', chart_type='column')
+viz1.set_controls(sc)
 viz2 = Visualization(data=data1, name='viz 3')
+viz2.set_controls(sc)
 viz3 = Visualization(data=df, name='viz 3', chart_type='column')
+viz3.set_controls(sc)
 viz4 = Visualization(data=query, name='viz 3')
+viz4.set_controls(sc)
 
 storyboard = Storyboard(url='Sales-by-Year', title='Sales by year')
 storyboard.set_visualizations([viz, viz1])
